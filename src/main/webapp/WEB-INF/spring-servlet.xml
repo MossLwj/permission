@@ -11,5 +11,17 @@
 
     <!-- 启动包扫描功能 -->
     <context:component-scan base-package="com.lwj.controller"/>
+    <context:component-scan base-package="com.lwj.service"/>
 
+    <!-- 把我们定义在controller中的方法的RequestMapping()中的名字去找对应的方法 -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    <!--告诉spring Mvc的请求返回格式-->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+    <!-- 当希望通过json返回数据的时候，通过这个类来处理返回的数据格式 -->
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+    <!-- 配置视图解析器，方便页面返回解析 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
 </beans>

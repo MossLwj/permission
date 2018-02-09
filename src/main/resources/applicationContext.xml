@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.alibaba.com/schema/stat http://www.alibaba.com/schema/stat.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 配置读取配置文件中的属性 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:settings.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 配置阿里的druid连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${db.driverClassName}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+        <property name="initialSize" value="3"/>
+        <property name="minIdle" value="3"/>
+        <property name="maxActive" value="20"/>
+        <property name="maxWait" value="60000"/>
+        <property name="filters" value="stat,wall"/>
+    </bean>
+
+    <!-- 配置mybatis的配置文件的地址、数据量链接池和sql的路径 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!-- 定义mybatis的接口扫描 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.lwj.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+    <!-- spring的事务管理配置 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 启动spring事务注解方式 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- 配置druid -->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <!-- 当sql执行超过3000ms时将sql标记为慢sql-->
+        <property name="slowSqlMillis" value="3000"/>
+        <!-- 配置是否要将慢sql以日志的方式打印出来 -->
+        <property name="logSlowSql" value="true"/>
+        <!-- 当显示成很多行，显示成一行 -->
+        <property name="mergeSql" value="true"/>
+    </bean>
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql"/>
+    </bean>
+
+</beans>

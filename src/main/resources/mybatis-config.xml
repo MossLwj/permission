@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <!-- 允许在嵌套语句中使用分页 -->
+        <setting name="safeRowBoundsEnabled" value="true"/>
+        <!-- 自动生成主键 -->
+        <setting name="useGeneratedKeys" value="true"/>
+        <!-- 是否使用缓存 -->
+        <setting name="cacheEnabled" value="false"/>
+    </settings>
+    <!-- 设置使用类别名 -->
+    <!--<typeAliases>-->
+
+    <!--</typeAliases>-->
+
+    <!-- 在mybatis中设置监听 -->
+    <!--<plugins>-->
+        <!--<plugin interceptor=""></plugin>-->
+    <!--</plugins>-->
+</configuration>
